@@ -16,6 +16,6 @@ for i in range(len(arr)):
             for b in range(j,j+3): 
                 temp += arr[a][b]
         
-    if temp > answer:
-        answer = temp
+        if temp > answer:
+            answer = temp
 print(answer)
