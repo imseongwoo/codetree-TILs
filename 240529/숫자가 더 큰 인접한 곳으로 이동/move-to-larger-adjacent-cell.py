@@ -1,29 +1,38 @@
-def find_path(n, r, c, grid):
-    directions = [(-1, 0), (1, 0), (0, 1), (0, -1)]  # 상, 하, 좌, 우 순서
-    result = []
-    r, c = r - 1, c - 1 
+n, curr_x, curr_y = tuple(map(int, input().split()))
+a = [[0] * (n + 1)]
+for _ in range(n):
+    a.append([0] + list(map(int, input().split())))
+
+visited_nums = []
+
+def in_range(x, y):
+    return 1 <= x and x <= n and 1 <= y and y <= n
+
+def can_go(x, y, curr_num):
+    return in_range(x, y) and a[x][y] > curr_num
+
+def simulate():
+    global curr_x, curr_y
     
-    while True:
-        result.append(grid[r][c])
-        current_value = grid[r][c]
-        found = False
-        
-        for dr, dc in directions:
-            nr, nc = r + dr, c + dc
-            if 0 <= nr < n and 0 <= nc < n and grid[nr][nc] > current_value:
-                r, c = nr, nc
-                found = True
-                break
-        
-        if not found:
-            break
+    dxs, dys = [-1, 1, 0, 0], [0, 0, -1, 1]
     
-    return result
+    for dx, dy in zip(dxs, dys):
+        next_x, next_y = curr_x + dx, curr_y + dy
+        
+        if can_go(next_x, next_y, a[curr_x][curr_y]):
+            curr_x, curr_y = next_x, next_y
+            return True
 
+    return False
 
-n, r, c = map(int, input().split())
-grid = [list(map(int, input().split())) for _ in range(n)]
+visited_nums.append(a[curr_x][curr_y])
+while True:
+    greater_number_exist = simulate()
+    
+    if not greater_number_exist:
+        break
+    
+    visited_nums.append(a[curr_x][curr_y])
 
-
-result = find_path(n, r, c, grid)
-print(" ".join(map(str, result)))
+for num in visited_nums:
+    print(num, end=' ')
