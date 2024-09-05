@@ -20,16 +20,14 @@ def dfs(x, y):
             visited[nx][ny] = 1
             dfs(nx,ny)
 
-    if member != 1:
-        town_member.append(member)
-        member = 1
-
 
 for i in range(n):
     for j in range(n):
         if arr[i][j] == 1 and visited[i][j] != 1:
             visited[i][j] = 1
+            member = 1
             dfs(i,j)
+            town_member.append(member)
 
 print(len(town_member))
 town_member.sort()
