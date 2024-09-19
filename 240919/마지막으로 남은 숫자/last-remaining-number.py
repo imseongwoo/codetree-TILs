@@ -7,8 +7,8 @@ for a in arr:
     heapq.heappush(pq, -a)
 
 while len(pq) >= 2:
-    a = heapq.heappop(pq)
-    b = heapq.heappop(pq)
+    a = -heapq.heappop(pq)
+    b = -heapq.heappop(pq)
 
     if a == b:
         continue
@@ -16,6 +16,6 @@ while len(pq) >= 2:
         heapq.heappush(pq, b-a)
 
 if pq:
-    print(pq[0])
+    print(-pq[0])
 else:
     print(-1)
