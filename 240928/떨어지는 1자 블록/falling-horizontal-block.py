@@ -11,6 +11,8 @@ for row in range(n - 1):
             break
     else:
         final_row = max(final_row, row)
+else:
+    final_row = n - 1
 
 for i in range(k, k + m):
     arr[final_row][i] = 1
