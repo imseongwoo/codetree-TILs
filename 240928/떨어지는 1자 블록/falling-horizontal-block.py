@@ -5,13 +5,14 @@ k -= 1
 final_row = n-1
 
 for row in range(n - 1):
+    can_fall = True
     for i in range(k, k + m):
         if arr[row][i] == 1:
+            can_fall = False
             final_row = row - 1
             break
-    else:
-        final_row = row
-
+    if not can_fall:
+        break
 
 for i in range(k, k + m):
     arr[final_row][i] = 1
