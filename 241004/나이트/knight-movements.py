@@ -33,7 +33,9 @@ q.append((r1, c1))
 visited[r1][c1] = 1
 bfs()
 
-if arr[r2][c2] == 0:
+if r1 == r2 and c1 == c2:
+    print(0)
+elif arr[r2][c2] == 0:
     print(-1)
 else:
     print(arr[r2][c2])
