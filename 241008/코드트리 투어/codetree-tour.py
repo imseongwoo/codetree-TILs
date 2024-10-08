@@ -43,6 +43,7 @@ def dijkstra(start):
                 if cost < distance[i]:
                     distance[i] = cost
                     heapq.heappush(q, (cost, i))
+    # print(distance)  # Remove or comment out to avoid unnecessary output
 
 def addProduct(id, revenue, dest):
     packages[id] = (revenue, dest)  # Store the product
@@ -52,20 +53,26 @@ def addProduct(id, revenue, dest):
     if profit < 0:  # Include products with profit >= 0
         return
     heapq.heappush(pq, (-profit, id, revenue, dest))
+    # print("pq=", pq)  # Comment out to avoid unnecessary output
 
 def removeProduct(id):
     isDeleted[id] = True
 
 def sellProduct():
     ans = -1
-
+    # print(pq)  # Comment out to avoid unnecessary output
     while pq:
         profit, id, revenue, dest = heapq.heappop(pq)
+        profit = -profit
         if isDeleted.get(id, False):
+            # print('id=', id)  # Comment out to avoid unnecessary output
+            # print(pq)  # Comment out to avoid unnecessary output
             continue
         else:
+            if profit < 0:
+                break
             ans = id
-            isDeleted[id] = True  # Mark as sold
+            isDeleted[id] = True
             break
     print(ans)
 
