@@ -50,7 +50,7 @@ def addProduct(id, revenue, dest):
     if distance[dest] == INF:
         return
     profit = revenue - distance[dest]
-    if profit < 0:
+    if profit < 0:  # Include packages with profit >= 0
         return
     heapq.heappush(pq, (-profit, id, revenue, dest))
 
@@ -64,10 +64,9 @@ def sellProduct():
         profit, id, revenue, dest = heapq.heappop(pq)
         if isDeleted[id]:
             continue
-        elif -profit < 0:
-            break
         else:
             ans = id
+            isDeleted[id] = 1  # Mark as sold
             break
 
     print(ans)
@@ -76,46 +75,53 @@ def modifyDijkstraStartNode(s):
     global S
     S = s
     dijkstra(S)
-    # Clear the priority queue
     pq.clear()
-    # Re-add all packages
     for id, (revenue, dest) in packages.items():
         if not isDeleted[id]:
             if distance[dest] == INF:
                 continue
             profit = revenue - distance[dest]
-            if profit <= 0:
+            if profit < 0:
                 continue
             heapq.heappush(pq, (-profit, id, revenue, dest))
 
 def main():
     q = int(sys.stdin.readline())
-    for _ in range(q):
-        query = list(map(int, sys.stdin.readline().split()))
-        t = query[0]
+    input_lines = []
+    for line in sys.stdin:
+        input_lines.extend(line.strip().split())
 
+    idx = 0
+    for _ in range(q):
+        t = int(input_lines[idx])
+        idx += 1
         if t == 100:
-            # Build the land
-            buildLand(query[1], query[2], query[3:])
-            # Run Dijkstra from city 0
-            S = 0  # Starting city is 0
+            n = int(input_lines[idx])
+            m = int(input_lines[idx + 1])
+            idx += 2
+            needed_numbers = 3 * m
+            arr = []
+            for _ in range(needed_numbers):
+                arr.append(int(input_lines[idx]))
+                idx += 1
+            buildLand(n, m, arr)
+            S = 0
             dijkstra(S)
         elif t == 200:
-            # Add product
-            id = query[1]
-            revenue = query[2]
-            dest = query[3]
+            id = int(input_lines[idx])
+            revenue = int(input_lines[idx + 1])
+            dest = int(input_lines[idx + 2])
+            idx += 3
             addProduct(id, revenue, dest)
         elif t == 300:
-            # Remove product
-            id = query[1]
+            id = int(input_lines[idx])
+            idx += 1
             removeProduct(id)
         elif t == 400:
-            # Sell product
             sellProduct()
         elif t == 500:
-            # Change starting city
-            s = query[1]
+            s = int(input_lines[idx])
+            idx += 1
             modifyDijkstraStartNode(s)
 
 if __name__ == '__main__':
