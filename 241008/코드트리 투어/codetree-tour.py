@@ -1,5 +1,4 @@
 import heapq
-import sys
 
 INF = float('inf')
 graph = []
@@ -7,16 +6,16 @@ distance = []
 N, M = 0, 0
 pq = []
 
-isDeleted = {}
-packages = {}  # Dictionary to store all packages
-S = 0  # Starting city
+isDeleted = {}  # Use a dictionary to handle arbitrary IDs
+packages = {}   # Store all products
+S = 0           # Starting city
 
 def buildLand(n, m, arr):
     global N, M, graph
     N = n
     M = m
-    graph = [[INF] * n for _ in range(n)]
-    for i in range(n):
+    graph = [[INF] * N for _ in range(N)]
+    for i in range(N):
         graph[i][i] = 0
 
     for i in range(m):
@@ -46,11 +45,11 @@ def dijkstra(start):
                     heapq.heappush(q, (cost, i))
 
 def addProduct(id, revenue, dest):
-    packages[id] = (revenue, dest)
+    packages[id] = (revenue, dest)  # Store the product
     if distance[dest] == INF:
         return
     profit = revenue - distance[dest]
-    if profit < 0:  # Include packages with profit >= 0
+    if profit < 0:  # Include products with profit >= 0
         return
     heapq.heappush(pq, (-profit, id, revenue, dest))
 
@@ -68,7 +67,6 @@ def sellProduct():
             ans = id
             isDeleted[id] = True  # Mark as sold
             break
-
     print(ans)
 
 def modifyDijkstraStartNode(s):
@@ -94,6 +92,7 @@ def main():
     for _ in range(q):
         t = int(input_lines[idx])
         idx += 1
+
         if t == 100:
             n = int(input_lines[idx])
             m = int(input_lines[idx + 1])
