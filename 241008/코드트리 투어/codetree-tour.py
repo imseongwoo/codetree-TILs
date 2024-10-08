@@ -7,7 +7,7 @@ distance = []
 N, M = 0, 0
 pq = []
 
-isDeleted = [0] * 30005
+isDeleted = {}
 packages = {}  # Dictionary to store all packages
 S = 0  # Starting city
 
@@ -55,18 +55,18 @@ def addProduct(id, revenue, dest):
     heapq.heappush(pq, (-profit, id, revenue, dest))
 
 def removeProduct(id):
-    isDeleted[id] = 1
+    isDeleted[id] = True
 
 def sellProduct():
     ans = -1
 
     while pq:
         profit, id, revenue, dest = heapq.heappop(pq)
-        if isDeleted[id]:
+        if isDeleted.get(id, False):
             continue
         else:
             ans = id
-            isDeleted[id] = 1  # Mark as sold
+            isDeleted[id] = True  # Mark as sold
             break
 
     print(ans)
@@ -77,7 +77,7 @@ def modifyDijkstraStartNode(s):
     dijkstra(S)
     pq.clear()
     for id, (revenue, dest) in packages.items():
-        if not isDeleted[id]:
+        if not isDeleted.get(id, False):
             if distance[dest] == INF:
                 continue
             profit = revenue - distance[dest]
@@ -86,12 +86,11 @@ def modifyDijkstraStartNode(s):
             heapq.heappush(pq, (-profit, id, revenue, dest))
 
 def main():
-    q = int(sys.stdin.readline())
-    input_lines = []
-    for line in sys.stdin:
-        input_lines.extend(line.strip().split())
+    import sys
+    input_lines = sys.stdin.read().split()
+    q = int(input_lines[0])
+    idx = 1
 
-    idx = 0
     for _ in range(q):
         t = int(input_lines[idx])
         idx += 1
