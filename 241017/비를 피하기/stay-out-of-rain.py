@@ -1,67 +1,55 @@
 from collections import deque
+import copy
+n,h,m = map(int,input().split())
+rain = [list(map(int,input().split())) for _ in range(n)]
 
-def bfs(grid, n):
-    # 네 방향 (위, 아래, 왼쪽, 오른쪽) 이동을 위한 설정
-    directions = [(-1, 0), (1, 0), (0, -1), (0, 1)]
-    
-    # 거리 테이블을 -1로 초기화 (이동할 수 없는 경우를 의미)
-    distance = [[-1] * n for _ in range(n)]
-    
-    # BFS를 위한 큐 초기화
-    queue = deque()
-    
-    # 비를 피할 수 있는 장소 (숫자 3)에서 BFS 시작
-    for i in range(n):
-        for j in range(n):
-            if grid[i][j] == 3:
-                queue.append((i, j, 0))  # (행, 열, 거리)
-    
-    # BFS 수행
-    while queue:
-        x, y, dist = queue.popleft()
-        
-        # 이미 방문한 곳은 무시
-        if distance[x][y] != -1:
-            continue
-        
-        # 현재 위치의 거리를 기록
-        distance[x][y] = dist
-        
-        # 4방향 탐색
-        for dx, dy in directions:
-            nx, ny = x + dx, y + dy
-            if 0 <= nx < n and 0 <= ny < n and grid[nx][ny] != 1 and distance[nx][ny] == -1:
-                queue.append((nx, ny, dist + 1))
-    
-    return distance
+# 변경된 값을 갱신해주기 위한 rain2
+rain2 = copy.deepcopy(rain)
+dx = [-1,1,0,0]
+dy = [0,0,-1,1]
 
-def solve_rain_avoidance(n, grid):
-    # 각 위치에서 비를 피할 수 있는 장소까지의 최소 거리를 구함
-    distance_from_shelter = bfs(grid, n)
-    
-    result = []
-    
-    # 결과 생성: 사람이 있는 위치에 대해 최소 거리를 계산
-    for i in range(n):
-        row_result = []
-        for j in range(n):
-            if grid[i][j] == 2:
-                # 사람이 있는 위치에 대해 결과 출력 (비 피할 수 있는 장소까지의 거리)
-                row_result.append(distance_from_shelter[i][j])
-            else:
-                # 사람이 없는 위치는 0으로 출력
-                row_result.append(0)
-        result.append(row_result)
-    
-    return result
+#처음 초기 선정 사람이 아닌 것을 판단 
+fir_visited = [[False]*n for _ in range(n)]
+for i in range(n):
+    for j in range(n):
+        if rain[i][j] == 1 or rain[i][j] == 3 or rain[i][j]==0:
+            if fir_visited[i][j] == False:
+                fir_visited[i][j] = True
 
-# 입력 처리
-n, h, m = map(int, input().split())
-grid = [list(map(int, input().split())) for _ in range(n)]
+def bfs(i,j):
+    q = deque()
+    q.append((i,j))
+    while q: 
+        x,y = q.popleft()
+        for i in range(4):
+            nx = x + dx[i]
+            ny = y + dy[i]
+            if 0<=nx<n and 0<=ny<n:
+                if visited[nx][ny] == False and ((rain[nx][ny]==0 or rain[nx][ny]==2)):
+                    visited[nx][ny] = True 
+                    q.append((nx,ny))
+                    rain3[nx][ny] = rain3[x][y] + 1
+                if rain[nx][ny]==3:
+                    rain3[nx][ny] = rain3[x][y] + 1
+                    return rain3[nx][ny] 
+    return -1
+                
 
-# 결과 계산
-result = solve_rain_avoidance(n, grid)
+for i in range(n):
+    for j in range(n):
+        if rain2[i][j] == 2 : 
+            visited = [[False] * n for _ in range(n)] 
+            visited[i][j] = True
+            # 3까지에 공간을 거리를 알려주기 위한 rain3
+            rain3 = [[0]* n for _ in range(n)]
+            tal = bfs(i,j)
+            rain2[i][j] = tal 
+    
 
-# 결과 출력
-for row in result:
-    print(' '.join(map(str, row)))
+for i in range(n):
+    for j in range(n):
+        if fir_visited[i][j] == True :
+            print(0,end=' ')
+        else:
+            print(rain2[i][j],end=' ')
+    print()
