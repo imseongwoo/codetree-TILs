@@ -1,9 +1,10 @@
-n,m = map(int, input().split())
+# 변수 선언 및 입력
+n, m = tuple(map(int ,input().split()))
 arr = list(map(int, input().split()))
 
+
 def lower_bound(target):
-    left = 0
-    right = n - 1
+    left, right = 0, n - 1
     min_idx = n
 
     while left <= right:
@@ -13,12 +14,12 @@ def lower_bound(target):
             right = mid - 1
         else:
             left = mid + 1
+    
     return min_idx
 
 
 def upper_bound(target):
-    left = 0
-    right = n - 1
+    left, right = 0, n - 1
     min_idx = n
 
     while left <= right:
@@ -28,9 +29,12 @@ def upper_bound(target):
             right = mid - 1
         else:
             left = mid + 1
-
+    
     return min_idx
 
-for _ in range(n):
-    num = int(input())
-    print(upper_bound(num) - lower_bound(num))
+
+for _ in range(m):
+    x = int(input())
+    count = upper_bound(x) - lower_bound(x)
+
+    print(count)
