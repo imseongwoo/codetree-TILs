@@ -1,7 +1,7 @@
 from collections import deque
 
 n = int(input())
-visited = [0] * 1000002
+visited = [0] * 10000002
 
 q = deque()
 q.append((n,0))
