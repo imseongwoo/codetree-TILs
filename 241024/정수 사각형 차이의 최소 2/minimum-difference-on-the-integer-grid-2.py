@@ -1,37 +1,70 @@
+import sys
+
+INT_MAX = sys.maxsize
+MAX_R = 100
+
+# 변수 선언 및 입력:
 n = int(input())
-arr = [list(map(int, input().split())) for _ in range(n)]
+num = [
+    list(map(int, input().split()))
+    for _ in range(n)
+]
+dp = [
+    [
+        [INT_MAX] * (MAX_R + 1)
+        for _ in range(n)
+    ]
+    for _ in range(n)
+]
 
-# DP table to store min and max values for each cell
-dp = [[(float('inf'), float('-inf')) for _ in range(n)] for _ in range(n)]
+def initialize():
+    # 전부 INT_MAX로 초기화합니다.
+    for i in range(n):
+        for j in range(n):
+            for k in range(1, MAX_R + 1):
+                dp[i][j][k] = INT_MAX
 
-# Initialize the top-left corner
-dp[0][0] = (arr[0][0], arr[0][0])
+    # 시작점의 경우 dp[0][0][num[0][0]] = num[0][0]으로 초기값을 설정해줍니다
+    dp[0][0][num[0][0]] = num[0][0]
 
-# Fill the first row (can only come from the left)
-for b in range(1, n):
-    min_val, max_val = dp[0][b - 1]
-    dp[0][b] = (min(min_val, arr[0][b]), max(max_val, arr[0][b]))
+    # 최좌측 열의 초기값을 설정해줍니다.
+    for i in range(1, n):
+        for k in range(1, MAX_R + 1):
+            dp[i][0][min(k, num[i][0])] = min(
+                dp[i][0][min(k, num[i][0])],
+                max(dp[i - 1][0][k], num[i][0])
+            )
 
-# Fill the first column (can only come from the top)
-for a in range(1, n):
-    min_val, max_val = dp[a - 1][0]
-    dp[a][0] = (min(min_val, arr[a][0]), max(max_val, arr[a][0]))
+    # 최상단 행의 초기값을 설정해줍니다.
+    for j in range(1, n):
+        for k in range(1, MAX_R + 1):
+            dp[0][j][min(k, num[0][j])] = min(
+                dp[0][j][min(k, num[0][j])],
+                max(dp[0][j - 1][k], num[0][j])
+            )
 
-# Fill the rest of the DP table
-for a in range(1, n):
-    for b in range(1, n):
-        # Min and max values from the top
-        min_from_top, max_from_top = dp[a - 1][b]
-        # Min and max values from the left
-        min_from_left, max_from_left = dp[a][b - 1]
-        
-        # Calculate min and max values for the current cell
-        new_min = min(min(min_from_top, min_from_left), arr[a][b])
-        new_max = max(max(max_from_top, max_from_left), arr[a][b])
-        
-        dp[a][b] = (new_min, new_max)
+def solve():
+    # DP 초기값 설정
+    initialize()
 
-# Get the result at the bottom-right corner
-min_val, max_val = dp[n - 1][n - 1]
-result = max_val - min_val
-print(result)
+    # 탐색하는 위치의 위에 값과 좌측 값 중에 작은 값과
+    # 해당 위치의 숫자 중에 최댓값을 구해줍니다.
+    for i in range(1, n):
+        for j in range(1, n):
+            for k in range(1, MAX_R + 1):
+                dp[i][j][min(k, num[i][j])] = min(
+                    dp[i][j][min(k, num[i][j])],
+                    max(min(dp[i - 1][j][k], dp[i][j - 1][k]), num[i][j])
+                )
+
+   
+# DP로 문제를 해결합니다.
+solve()
+
+# 가능한 답 중 최적의 답을 계산합니다.
+ans = INT_MAX
+for k in range(1, MAX_R + 1):
+    if dp[n - 1][n - 1][k] != INT_MAX:
+        ans = min(ans, dp[n - 1][n - 1][k] - k)
+
+print(ans)
