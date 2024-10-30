@@ -1,27 +1,34 @@
-def min_additions_to_k_consecutive(N, K, B, missing_numbers):
-    # Create a set of missing numbers for O(1) lookups
-    missing_set = set(missing_numbers)
+import sys
 
-    # Initial count of missing numbers in the first window of length K
-    missing_count = sum(1 for i in range(1, K + 1) if i in missing_set)
-    min_missing = missing_count
+INT_MAX = sys.maxsize
 
-    # Sliding window: for each new position, adjust the count
-    for i in range(2, N - K + 2):
-        # Remove the influence of the number that slides out
-        if i - 1 in missing_set:
-            missing_count -= 1
-        # Add the influence of the new number that slides in
-        if i + K - 1 in missing_set:
-            missing_count += 1
-        # Track the minimum count of missing numbers in any K-length segment
-        min_missing = min(min_missing, missing_count)
+# 변수 선언 및 입력:
+n, k, b = tuple(map(int, input().split()))
+arr = [0] * (n + 1)
+prefix_sum = [0] * (n + 1)
 
-    return min_missing
 
-# Example usage
-N = 10
-K = 6
-B = 5
-missing_numbers = [2, 10, 1, 5, 9]
-print(min_additions_to_k_consecutive(N, K, B, missing_numbers))
+# [s, e] 구간 내의 원소의 합을 반환합니다.
+def get_sum(s, e):
+    return prefix_sum[e] - prefix_sum[s - 1]
+
+
+ans = INT_MAX
+
+for _ in range(b):
+    x = int(input())
+    # 해당 숫자들이 주어진 자리에
+    # 숫자 1을 적어줍니다.
+    arr[x] = 1
+
+# 누적합 배열을 만들어줍니다.
+prefix_sum[0] = 0
+for i in range(1, n + 1):
+    prefix_sum[i] = prefix_sum[i - 1] + arr[i]
+
+# 모든 구간에 대해 합을 찾아
+# 그 중 최솟값을 갱신합니다.
+for i in range(1, n - k + 2):
+    ans = min(ans, get_sum(i, i + k - 1))
+
+print(ans)
