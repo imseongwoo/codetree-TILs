@@ -12,9 +12,8 @@ for i in range(1, num):
 
 for _ in range(q):
     a, b = map(int, input().split())
-    ans = -1
-    if check[a] == 0 and check[b] == 0:
-        ans = prefix_sum[b] - prefix_sum[a]
+    if a == 0:
+        ans = prefix_sum[b]
     else:
-        ans = prefix_sum[b] - prefix_sum[a] + 1
+        ans = prefix_sum[b] - prefix_sum[a-1]
     print(ans)
